@@ -39,28 +39,28 @@ type Bus interface {
 	Out(port uint16, val uint8)
 }
 
-// CycledBus extends Bus with a cycle counter parameter on every access.
+// CycleBus extends Bus with a cycle counter parameter on every access.
 // This allows peripherals to track the exact T-state at which each bus
 // operation occurs, enabling cycle-accurate peripheral emulation.
 //
-// If the bus passed to [New] implements CycledBus, the cycle-aware methods
+// If the bus passed to [New] implements CycleBus, the cycle-aware methods
 // are used automatically. Otherwise the plain [Bus] methods are used.
-type CycledBus interface {
+type CycleBus interface {
 	Bus
 
-	// CycledFetch reads an opcode byte during an M1 cycle.
-	CycledFetch(cycle uint64, addr uint16) uint8
+	// CycleFetch reads an opcode byte during an M1 cycle.
+	CycleFetch(cycle uint64, addr uint16) uint8
 
-	// CycledRead reads a byte from the given memory address.
+	// CycleRead reads a byte from the given memory address.
 	// The cycle parameter is the CPU's T-state counter at the time of access.
-	CycledRead(cycle uint64, addr uint16) uint8
+	CycleRead(cycle uint64, addr uint16) uint8
 
-	// CycledWrite writes a byte to the given memory address.
-	CycledWrite(cycle uint64, addr uint16, val uint8)
+	// CycleWrite writes a byte to the given memory address.
+	CycleWrite(cycle uint64, addr uint16, val uint8)
 
-	// CycledIn reads a byte from the given I/O port.
-	CycledIn(cycle uint64, port uint16) uint8
+	// CycleIn reads a byte from the given I/O port.
+	CycleIn(cycle uint64, port uint16) uint8
 
-	// CycledOut writes a byte to the given I/O port.
-	CycledOut(cycle uint64, port uint16, val uint8)
+	// CycleOut writes a byte to the given I/O port.
+	CycleOut(cycle uint64, port uint16, val uint8)
 }

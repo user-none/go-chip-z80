@@ -4,7 +4,7 @@ package z80
 type CPU struct {
 	reg    Registers
 	bus    Bus
-	cbus   CycledBus // non-nil when bus implements CycledBus
+	cbus   CycleBus // non-nil when bus implements CycleBus
 	cycles uint64
 
 	// Interrupt state.
@@ -24,11 +24,11 @@ type CPU struct {
 }
 
 // New creates a CPU wired to the given bus and performs a reset.
-// If bus implements [CycledBus], the cycle-aware methods are used
+// If bus implements [CycleBus], the cycle-aware methods are used
 // for all memory and I/O access.
 func New(bus Bus) *CPU {
 	c := &CPU{bus: bus}
-	if cb, ok := bus.(CycledBus); ok {
+	if cb, ok := bus.(CycleBus); ok {
 		c.cbus = cb
 	}
 	c.ixiyReg = &c.reg.HL
@@ -154,25 +154,25 @@ func (c *CPU) fetchOpcode() uint8 {
 }
 
 // --- Bus dispatch helpers ---
-// These route through CycledBus when available, otherwise plain Bus.
+// These route through CycleBus when available, otherwise plain Bus.
 
 func (c *CPU) fetchBus(addr uint16) uint8 {
 	if c.cbus != nil {
-		return c.cbus.CycledFetch(c.cycles, addr)
+		return c.cbus.CycleFetch(c.cycles, addr)
 	}
 	return c.bus.Fetch(addr)
 }
 
 func (c *CPU) readBus(addr uint16) uint8 {
 	if c.cbus != nil {
-		return c.cbus.CycledRead(c.cycles, addr)
+		return c.cbus.CycleRead(c.cycles, addr)
 	}
 	return c.bus.Read(addr)
 }
 
 func (c *CPU) writeBus(addr uint16, val uint8) {
 	if c.cbus != nil {
-		c.cbus.CycledWrite(c.cycles, addr, val)
+		c.cbus.CycleWrite(c.cycles, addr, val)
 		return
 	}
 	c.bus.Write(addr, val)
@@ -180,14 +180,14 @@ func (c *CPU) writeBus(addr uint16, val uint8) {
 
 func (c *CPU) inBus(port uint16) uint8 {
 	if c.cbus != nil {
-		return c.cbus.CycledIn(c.cycles, port)
+		return c.cbus.CycleIn(c.cycles, port)
 	}
 	return c.bus.In(port)
 }
 
 func (c *CPU) outBus(port uint16, val uint8) {
 	if c.cbus != nil {
-		c.cbus.CycledOut(c.cycles, port, val)
+		c.cbus.CycleOut(c.cycles, port, val)
 		return
 	}
 	c.bus.Out(port, val)

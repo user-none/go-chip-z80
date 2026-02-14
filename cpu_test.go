@@ -19,8 +19,8 @@ func newTestCPU() (*CPU, *testBus) {
 	return cpu, bus
 }
 
-// testCycledBus implements CycledBus and records cycle values.
-type testCycledBus struct {
+// testCycleBus implements CycleBus and records cycle values.
+type testCycleBus struct {
 	testBus
 	lastFetchCycle uint64
 	lastReadCycle  uint64
@@ -29,28 +29,28 @@ type testCycledBus struct {
 	lastOutCycle   uint64
 }
 
-func (b *testCycledBus) CycledFetch(cycle uint64, addr uint16) uint8 {
+func (b *testCycleBus) CycleFetch(cycle uint64, addr uint16) uint8 {
 	b.lastFetchCycle = cycle
 	return b.mem[addr]
 }
-func (b *testCycledBus) CycledRead(cycle uint64, addr uint16) uint8 {
+func (b *testCycleBus) CycleRead(cycle uint64, addr uint16) uint8 {
 	b.lastReadCycle = cycle
 	return b.mem[addr]
 }
-func (b *testCycledBus) CycledWrite(cycle uint64, addr uint16, val uint8) {
+func (b *testCycleBus) CycleWrite(cycle uint64, addr uint16, val uint8) {
 	b.lastWriteCycle = cycle
 	b.mem[addr] = val
 }
-func (b *testCycledBus) CycledIn(cycle uint64, port uint16) uint8 {
+func (b *testCycleBus) CycleIn(cycle uint64, port uint16) uint8 {
 	b.lastInCycle = cycle
 	return 0xFF
 }
-func (b *testCycledBus) CycledOut(cycle uint64, port uint16, val uint8) {
+func (b *testCycleBus) CycleOut(cycle uint64, port uint16, val uint8) {
 	b.lastOutCycle = cycle
 }
 
-func newTestCycledCPU() (*CPU, *testCycledBus) {
-	bus := &testCycledBus{}
+func newTestCycleCPU() (*CPU, *testCycleBus) {
+	bus := &testCycleBus{}
 	cpu := New(bus)
 	return cpu, bus
 }
@@ -328,15 +328,15 @@ func TestINT_IM0_RST(t *testing.T) {
 	}
 }
 
-func TestCycledBus_Detected(t *testing.T) {
-	cpu, _ := newTestCycledCPU()
+func TestCycleBus_Detected(t *testing.T) {
+	cpu, _ := newTestCycleCPU()
 	if cpu.cbus == nil {
-		t.Fatal("CycledBus should be detected")
+		t.Fatal("CycleBus should be detected")
 	}
 }
 
-func TestCycledBus_FetchPassesCycles(t *testing.T) {
-	cpu, bus := newTestCycledCPU()
+func TestCycleBus_FetchPassesCycles(t *testing.T) {
+	cpu, bus := newTestCycleCPU()
 	// Step will fetchOpcode which calls fetchBus -> CycledFetch at cycle 0.
 	cpu.Step()
 	if bus.lastFetchCycle != 0 {
@@ -344,8 +344,8 @@ func TestCycledBus_FetchPassesCycles(t *testing.T) {
 	}
 }
 
-func TestCycledBus_WritePassesCycles(t *testing.T) {
-	cpu, bus := newTestCycledCPU()
+func TestCycleBus_WritePassesCycles(t *testing.T) {
+	cpu, bus := newTestCycleCPU()
 	cpu.reg.SP = 0xFFFE
 	cpu.reg.IFF1 = true
 	cpu.reg.IM = 1
@@ -357,7 +357,7 @@ func TestCycledBus_WritePassesCycles(t *testing.T) {
 	}
 }
 
-func TestPlainBus_NoCycledBus(t *testing.T) {
+func TestPlainBus_NoCycleBus(t *testing.T) {
 	cpu, _ := newTestCPU()
 	if cpu.cbus != nil {
 		t.Fatal("plain Bus should not set cbus")
