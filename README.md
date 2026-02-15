@@ -133,6 +133,22 @@ cpu.Halted()               // True if executing HALT
 cpu.Reset()                // Power-on state: PC=0, SP=0xFFFF, AF=0xFFFF
 ```
 
+### Save states
+
+For save-state support (e.g. in game console emulators), the CPU provides
+binary serialization of its complete internal state:
+
+```go
+buf := make([]byte, cpu.SerializeSize()) // pre-allocate once
+cpu.Serialize(buf)                       // save
+err := cpu.Deserialize(buf)              // restore
+```
+
+`SerializeSize` returns a constant; the buffer can be allocated once and
+reused. The format is a compact little-endian encoding of all registers
+and internal state. Bus references are not included — the caller handles
+memory and I/O state separately.
+
 ## Design
 
 ### Instruction decoding
