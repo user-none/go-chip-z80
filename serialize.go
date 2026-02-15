@@ -6,20 +6,16 @@ import (
 )
 
 const cpuSerializeVersion = 1
-const cpuSerializeSize = 47
 
-// SerializeSize returns the number of bytes needed to serialize the CPU state.
-// The value is constant and can be used to pre-allocate a reusable buffer.
-func (c *CPU) SerializeSize() int {
-	return cpuSerializeSize
-}
+// SerializeSize is the number of bytes needed to serialize the CPU state.
+const SerializeSize = 47
 
 // Serialize writes the complete CPU state into buf in a compact little-endian
-// binary format. Returns an error if len(buf) < SerializeSize(). Bus
+// binary format. Returns an error if len(buf) < SerializeSize. Bus
 // references are not included — the caller handles memory and I/O state
 // separately.
 func (c *CPU) Serialize(buf []byte) error {
-	if len(buf) < cpuSerializeSize {
+	if len(buf) < SerializeSize {
 		return errors.New("z80: serialize buffer too small")
 	}
 
@@ -56,7 +52,7 @@ func (c *CPU) Serialize(buf []byte) error {
 // produced by an incompatible version. Bus references are not modified — the
 // caller handles memory and I/O state separately.
 func (c *CPU) Deserialize(buf []byte) error {
-	if len(buf) < cpuSerializeSize {
+	if len(buf) < SerializeSize {
 		return errors.New("z80: deserialize buffer too small")
 	}
 	if buf[0] != cpuSerializeVersion {

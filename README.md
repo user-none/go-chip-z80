@@ -139,13 +139,13 @@ For save-state support (e.g. in game console emulators), the CPU provides
 binary serialization of its complete internal state:
 
 ```go
-buf := make([]byte, cpu.SerializeSize()) // pre-allocate once
-cpu.Serialize(buf)                       // save
-err := cpu.Deserialize(buf)              // restore
+buf := make([]byte, z80.SerializeSize) // pre-allocate once
+cpu.Serialize(buf)                     // save
+err := cpu.Deserialize(buf)            // restore
 ```
 
-`SerializeSize` returns a constant; the buffer can be allocated once and
-reused. The format is a compact little-endian encoding of all registers
+`SerializeSize` is a package-level constant; the buffer can be allocated once
+and reused. The format is a compact little-endian encoding of all registers
 and internal state. Bus references are not included — the caller handles
 memory and I/O state separately.
 

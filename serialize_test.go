@@ -3,9 +3,8 @@ package z80
 import "testing"
 
 func TestSerializeSize(t *testing.T) {
-	cpu, _ := newTestCPU()
-	if cpu.SerializeSize() != 47 {
-		t.Errorf("SerializeSize() = %d, want 47", cpu.SerializeSize())
+	if SerializeSize != 47 {
+		t.Errorf("SerializeSize = %d, want 47", SerializeSize)
 	}
 }
 
@@ -40,7 +39,7 @@ func TestSerializeRoundTrip(t *testing.T) {
 	cpu.nmiPending = true
 	cpu.afterEI = true
 
-	buf := make([]byte, cpu.SerializeSize())
+	buf := make([]byte, SerializeSize)
 	if err := cpu.Serialize(buf); err != nil {
 		t.Fatalf("Serialize failed: %v", err)
 	}
@@ -87,7 +86,7 @@ func TestSerializeRoundTripZero(t *testing.T) {
 	cpu, _ := newTestCPU()
 	cpu.Reset()
 
-	buf := make([]byte, cpu.SerializeSize())
+	buf := make([]byte, SerializeSize)
 	if err := cpu.Serialize(buf); err != nil {
 		t.Fatalf("Serialize failed: %v", err)
 	}
@@ -126,7 +125,7 @@ func TestSerializePreservesExecution(t *testing.T) {
 	cpu1.Step()
 
 	// Serialize after 2 instructions.
-	buf := make([]byte, cpu1.SerializeSize())
+	buf := make([]byte, SerializeSize)
 	if err := cpu1.Serialize(buf); err != nil {
 		t.Fatalf("Serialize failed: %v", err)
 	}
@@ -172,7 +171,7 @@ func TestDeserializeErrorShortBuffer(t *testing.T) {
 
 func TestDeserializeErrorBadVersion(t *testing.T) {
 	cpu, _ := newTestCPU()
-	buf := make([]byte, cpu.SerializeSize())
+	buf := make([]byte, SerializeSize)
 	if err := cpu.Serialize(buf); err != nil {
 		t.Fatalf("Serialize failed: %v", err)
 	}
@@ -189,7 +188,7 @@ func TestDeserializeErrorBadVersion(t *testing.T) {
 func BenchmarkSerialize(b *testing.B) {
 	bus := &testBus{}
 	cpu := New(bus)
-	buf := make([]byte, cpu.SerializeSize())
+	buf := make([]byte, SerializeSize)
 	b.ResetTimer()
 	for b.Loop() {
 		cpu.Serialize(buf)
@@ -199,7 +198,7 @@ func BenchmarkSerialize(b *testing.B) {
 func BenchmarkDeserialize(b *testing.B) {
 	bus := &testBus{}
 	cpu := New(bus)
-	buf := make([]byte, cpu.SerializeSize())
+	buf := make([]byte, SerializeSize)
 	cpu.Serialize(buf)
 	cpu2 := New(bus)
 	b.ResetTimer()
