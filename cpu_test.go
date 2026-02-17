@@ -7,11 +7,11 @@ type testBus struct {
 	mem [65536]uint8
 }
 
-func (b *testBus) Fetch(addr uint16) uint8        { return b.mem[addr] }
-func (b *testBus) Read(addr uint16) uint8         { return b.mem[addr] }
-func (b *testBus) Write(addr uint16, val uint8)   { b.mem[addr] = val }
-func (b *testBus) In(port uint16) uint8           { return 0xFF }
-func (b *testBus) Out(port uint16, val uint8)     {}
+func (b *testBus) Fetch(addr uint16) uint8      { return b.mem[addr] }
+func (b *testBus) Read(addr uint16) uint8       { return b.mem[addr] }
+func (b *testBus) Write(addr uint16, val uint8) { b.mem[addr] = val }
+func (b *testBus) In(port uint16) uint8         { return 0xFF }
+func (b *testBus) Out(port uint16, val uint8)   {}
 
 func newTestCPU() (*CPU, *testBus) {
 	bus := &testBus{}
@@ -121,6 +121,21 @@ func TestCycles_Accumulates(t *testing.T) {
 	c2 := cpu.Step()
 	if cpu.Cycles() != uint64(c1+c2) {
 		t.Errorf("Cycles = %d, want %d", cpu.Cycles(), c1+c2)
+	}
+}
+
+func TestAddCycles(t *testing.T) {
+	cpu, _ := newTestCPU()
+	cpu.Step() // execute one instruction to get a baseline
+	before := cpu.Cycles()
+	cpu.AddCycles(42)
+	if cpu.Cycles() != before+42 {
+		t.Errorf("Cycles = %d, want %d", cpu.Cycles(), before+42)
+	}
+	// Adding zero should be harmless.
+	cpu.AddCycles(0)
+	if cpu.Cycles() != before+42 {
+		t.Errorf("Cycles after AddCycles(0) = %d, want %d", cpu.Cycles(), before+42)
 	}
 }
 

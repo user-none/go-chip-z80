@@ -77,6 +77,16 @@ for budget > 0 {
 remaining budget, paying it down on subsequent calls. This prevents cycle
 drift across frame boundaries.
 
+### External bus-hold cycles
+
+When external hardware (such as a DMA controller) seizes the bus, the CPU
+cannot execute but time still passes. Use `AddCycles` to advance the
+cycle counter without executing an instruction:
+
+```go
+cpu.AddCycles(dmaTransferCycles)
+```
+
 ### Cycle-accurate bus access
 
 If your peripherals need to know the exact T-state of each bus access,
@@ -129,6 +139,7 @@ All three interrupt modes are supported:
 regs := cpu.Registers()    // Snapshot of all registers
 cpu.SetState(regs)         // Restore (e.g. for save states)
 cpu.Cycles()               // Total T-states since last Reset
+cpu.AddCycles(n)           // Advance counter without executing (DMA, etc.)
 cpu.Halted()               // True if executing HALT
 cpu.Reset()                // Power-on state: PC=0, SP=0xFFFF, AF=0xFFFF
 ```

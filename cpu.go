@@ -123,6 +123,13 @@ func (c *CPU) Deficit() int {
 	return c.deficit
 }
 
+// AddCycles advances the cycle counter by n without executing any
+// instruction. Used to account for external bus-hold periods such as
+// DMA seizing the Z80 bus.
+func (c *CPU) AddCycles(n uint64) {
+	c.cycles += n
+}
+
 // Cycles returns the total T-state count since the last Reset.
 func (c *CPU) Cycles() uint64 {
 	return c.cycles
