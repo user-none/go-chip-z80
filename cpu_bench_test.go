@@ -10,12 +10,3 @@ func BenchmarkStep_PlainBus(b *testing.B) {
 		cpu.Step()
 	}
 }
-
-func BenchmarkStep_CycleBus(b *testing.B) {
-	bus := &testCycleBus{}
-	cpu := New(bus)
-	b.ResetTimer()
-	for b.Loop() {
-		cpu.Step()
-	}
-}

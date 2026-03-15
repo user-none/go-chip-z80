@@ -19,42 +19,6 @@ func newTestCPU() (*CPU, *testBus) {
 	return cpu, bus
 }
 
-// testCycleBus implements CycleBus and records cycle values.
-type testCycleBus struct {
-	testBus
-	lastFetchCycle uint64
-	lastReadCycle  uint64
-	lastWriteCycle uint64
-	lastInCycle    uint64
-	lastOutCycle   uint64
-}
-
-func (b *testCycleBus) CycleFetch(cycle uint64, addr uint16) uint8 {
-	b.lastFetchCycle = cycle
-	return b.mem[addr]
-}
-func (b *testCycleBus) CycleRead(cycle uint64, addr uint16) uint8 {
-	b.lastReadCycle = cycle
-	return b.mem[addr]
-}
-func (b *testCycleBus) CycleWrite(cycle uint64, addr uint16, val uint8) {
-	b.lastWriteCycle = cycle
-	b.mem[addr] = val
-}
-func (b *testCycleBus) CycleIn(cycle uint64, port uint16) uint8 {
-	b.lastInCycle = cycle
-	return 0xFF
-}
-func (b *testCycleBus) CycleOut(cycle uint64, port uint16, val uint8) {
-	b.lastOutCycle = cycle
-}
-
-func newTestCycleCPU() (*CPU, *testCycleBus) {
-	bus := &testCycleBus{}
-	cpu := New(bus)
-	return cpu, bus
-}
-
 func TestNew(t *testing.T) {
 	cpu, _ := newTestCPU()
 	regs := cpu.Registers()
@@ -340,42 +304,6 @@ func TestINT_IM0_RST(t *testing.T) {
 	}
 	if cpu.reg.PC != 0x0038 {
 		t.Errorf("PC = %04x after IM0 RST 38h, want 0038", cpu.reg.PC)
-	}
-}
-
-func TestCycleBus_Detected(t *testing.T) {
-	cpu, _ := newTestCycleCPU()
-	if cpu.cbus == nil {
-		t.Fatal("CycleBus should be detected")
-	}
-}
-
-func TestCycleBus_FetchPassesCycles(t *testing.T) {
-	cpu, bus := newTestCycleCPU()
-	// Step will fetchOpcode which calls fetchBus -> CycledFetch at cycle 0.
-	cpu.Step()
-	if bus.lastFetchCycle != 0 {
-		t.Errorf("lastFetchCycle = %d, want 0", bus.lastFetchCycle)
-	}
-}
-
-func TestCycleBus_WritePassesCycles(t *testing.T) {
-	cpu, bus := newTestCycleCPU()
-	cpu.reg.SP = 0xFFFE
-	cpu.reg.IFF1 = true
-	cpu.reg.IM = 1
-	cpu.INT(true, 0xFF)
-	cpu.Step() // Services IM1 interrupt, which pushes PC via writeBus
-
-	if bus.lastWriteCycle == 0 && cpu.Cycles() == 0 {
-		t.Error("expected CycledWrite to be called")
-	}
-}
-
-func TestPlainBus_NoCycleBus(t *testing.T) {
-	cpu, _ := newTestCPU()
-	if cpu.cbus != nil {
-		t.Fatal("plain Bus should not set cbus")
 	}
 }
 

@@ -226,7 +226,7 @@ func TestRET_cc_Taken(t *testing.T) {
 	cpu.reg.SP = 0xFFFC
 	bus.mem[0xFFFC] = 0x78
 	bus.mem[0xFFFD] = 0x56
-	bus.mem[0] = 0xC8 // RET Z
+	bus.mem[0] = 0xC8   // RET Z
 	cpu.reg.AF = 0x0040 // Z set
 	cycles := cpu.Step()
 	if cpu.reg.PC != 0x5678 {
@@ -239,7 +239,7 @@ func TestRET_cc_Taken(t *testing.T) {
 
 func TestRET_cc_NotTaken(t *testing.T) {
 	cpu, bus := newTestCPU()
-	bus.mem[0] = 0xC8 // RET Z
+	bus.mem[0] = 0xC8   // RET Z
 	cpu.reg.AF = 0x0000 // Z clear
 	cycles := cpu.Step()
 	if cpu.reg.PC != 1 {

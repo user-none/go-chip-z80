@@ -63,7 +63,7 @@ func TestADD_A_HL(t *testing.T) {
 
 func TestADC_A_r(t *testing.T) {
 	cpu, bus := newTestCPU()
-	bus.mem[0] = 0x89 // ADC A,C
+	bus.mem[0] = 0x89   // ADC A,C
 	cpu.reg.AF = 0x1001 // A=0x10, F=carry set
 	cpu.reg.BC = 0x0020
 	cpu.Step()

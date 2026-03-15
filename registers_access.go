@@ -6,22 +6,22 @@ package z80
 
 // --- Named accessors ---
 
-func (c *CPU) getA() uint8    { return uint8(c.reg.AF >> 8) }
-func (c *CPU) setA(v uint8)   { c.reg.AF = uint16(v)<<8 | c.reg.AF&0xFF }
-func (c *CPU) getF() uint8    { return uint8(c.reg.AF) }
-func (c *CPU) setF(v uint8)   { c.reg.AF = c.reg.AF&0xFF00 | uint16(v) }
-func (c *CPU) getB() uint8    { return uint8(c.reg.BC >> 8) }
-func (c *CPU) setB(v uint8)   { c.reg.BC = uint16(v)<<8 | c.reg.BC&0xFF }
-func (c *CPU) getC() uint8    { return uint8(c.reg.BC) }
-func (c *CPU) setC(v uint8)   { c.reg.BC = c.reg.BC&0xFF00 | uint16(v) }
-func (c *CPU) getD() uint8    { return uint8(c.reg.DE >> 8) }
-func (c *CPU) setD(v uint8)   { c.reg.DE = uint16(v)<<8 | c.reg.DE&0xFF }
-func (c *CPU) getE() uint8    { return uint8(c.reg.DE) }
-func (c *CPU) setE(v uint8)   { c.reg.DE = c.reg.DE&0xFF00 | uint16(v) }
-func (c *CPU) getH() uint8    { return uint8(*c.ixiyReg >> 8) }
-func (c *CPU) setH(v uint8)   { *c.ixiyReg = uint16(v)<<8 | *c.ixiyReg&0xFF }
-func (c *CPU) getL() uint8    { return uint8(*c.ixiyReg) }
-func (c *CPU) setL(v uint8)   { *c.ixiyReg = *c.ixiyReg&0xFF00 | uint16(v) }
+func (c *CPU) getA() uint8  { return uint8(c.reg.AF >> 8) }
+func (c *CPU) setA(v uint8) { c.reg.AF = uint16(v)<<8 | c.reg.AF&0xFF }
+func (c *CPU) getF() uint8  { return uint8(c.reg.AF) }
+func (c *CPU) setF(v uint8) { c.reg.AF = c.reg.AF&0xFF00 | uint16(v) }
+func (c *CPU) getB() uint8  { return uint8(c.reg.BC >> 8) }
+func (c *CPU) setB(v uint8) { c.reg.BC = uint16(v)<<8 | c.reg.BC&0xFF }
+func (c *CPU) getC() uint8  { return uint8(c.reg.BC) }
+func (c *CPU) setC(v uint8) { c.reg.BC = c.reg.BC&0xFF00 | uint16(v) }
+func (c *CPU) getD() uint8  { return uint8(c.reg.DE >> 8) }
+func (c *CPU) setD(v uint8) { c.reg.DE = uint16(v)<<8 | c.reg.DE&0xFF }
+func (c *CPU) getE() uint8  { return uint8(c.reg.DE) }
+func (c *CPU) setE(v uint8) { c.reg.DE = c.reg.DE&0xFF00 | uint16(v) }
+func (c *CPU) getH() uint8  { return uint8(*c.ixiyReg >> 8) }
+func (c *CPU) setH(v uint8) { *c.ixiyReg = uint16(v)<<8 | *c.ixiyReg&0xFF }
+func (c *CPU) getL() uint8  { return uint8(*c.ixiyReg) }
+func (c *CPU) setL(v uint8) { *c.ixiyReg = *c.ixiyReg&0xFF00 | uint16(v) }
 
 // --- Indexed register access ---
 // 3-bit field: 0=B, 1=C, 2=D, 3=E, 4=H, 5=L, 6=(HL), 7=A

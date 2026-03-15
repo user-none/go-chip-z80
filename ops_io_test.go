@@ -11,7 +11,7 @@ type ioBus struct {
 	inVal       uint8
 }
 
-func (b *ioBus) In(port uint16) uint8  { b.lastInPort = port; return b.inVal }
+func (b *ioBus) In(port uint16) uint8 { b.lastInPort = port; return b.inVal }
 func (b *ioBus) Out(port uint16, val uint8) {
 	b.lastOutPort = port
 	b.lastOutVal = val
@@ -58,7 +58,7 @@ func TestINI(t *testing.T) {
 	bus := &ioBus{inVal: 0x55}
 	cpu := New(bus)
 	bus.mem[0] = 0xED
-	bus.mem[1] = 0xA2 // INI
+	bus.mem[1] = 0xA2   // INI
 	cpu.reg.BC = 0x0310 // B=3, C=0x10
 	cpu.reg.HL = 0x8000
 	cycles := cpu.Step()

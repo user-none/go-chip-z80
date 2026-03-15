@@ -8,15 +8,15 @@ import (
 // z80State describes the full Z80 state for a single-step test case.
 type z80State struct {
 	A, F, B, C, D, E, H, L uint8
-	I, R                    uint8
-	PC, SP                  uint16
-	IX, IY                  uint16
-	AF_, BC_, DE_, HL_      uint16
-	IM                      uint8
-	IFF1, IFF2              bool
-	RAM                     [][2]uint16 // {{addr, val}, ...}
-	Ports                   [][2]uint16 // {{port, val}, ...} for input ports
-	Cycles                  int         // 0 = don't check
+	I, R                   uint8
+	PC, SP                 uint16
+	IX, IY                 uint16
+	AF_, BC_, DE_, HL_     uint16
+	IM                     uint8
+	IFF1, IFF2             bool
+	RAM                    [][2]uint16 // {{addr, val}, ...}
+	Ports                  [][2]uint16 // {{port, val}, ...} for input ports
+	Cycles                 int         // 0 = don't check
 }
 
 // sstBus implements Bus for single-step tests with configurable port reads.

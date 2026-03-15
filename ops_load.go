@@ -84,7 +84,7 @@ func init() {
 	// --- LD rr, nn (16-bit immediate) ---
 	// 0x01=BC, 0x11=DE, 0x21=HL, 0x31=SP
 	for i := uint8(0); i < 4; i++ {
-		op := i << 4 | 0x01
+		op := i<<4 | 0x01
 		baseOps[op] = func(c *CPU, op uint8) {
 			rr := c.getRR((op >> 4) & 3)
 			*rr = c.fetchPC16()

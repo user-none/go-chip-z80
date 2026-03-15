@@ -87,26 +87,6 @@ cycle counter without executing an instruction:
 cpu.AddCycles(dmaTransferCycles)
 ```
 
-### Cycle-accurate bus access
-
-If your peripherals need to know the exact T-state of each bus access,
-implement `CycleBus` in addition to `Bus`:
-
-```go
-type CycleBus interface {
-    Bus
-    CycleFetch(cycle uint64, addr uint16) uint8
-    CycleRead(cycle uint64, addr uint16) uint8
-    CycleWrite(cycle uint64, addr uint16, val uint8)
-    CycleIn(cycle uint64, port uint16) uint8
-    CycleOut(cycle uint64, port uint16, val uint8)
-}
-```
-
-When the bus passed to `New` implements `CycleBus`, the cycle-aware
-methods are used automatically. The `cycle` parameter is the CPU's
-cumulative T-state counter at the time of the access.
-
 ### Interrupts
 
 ```go
